@@ -57,6 +57,7 @@ public class PDF {
         public String ALL_PAGES = null;
         public String EVEN_PAGES = null;
         public String ODD_PAGES = null;
+		public String JAVASCRIPT = null;
         
         public String filename = null;
 

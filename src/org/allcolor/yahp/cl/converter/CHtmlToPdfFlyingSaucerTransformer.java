@@ -70,6 +70,7 @@ import org.w3c.tidy.Tidy;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfWriter;
 
 /**
  * This class transform an html document in a PDF.
@@ -565,6 +566,7 @@ public final class CHtmlToPdfFlyingSaucerTransformer implements
 			final Tidy tidy = this.getTidy();
 			final CShaniDomParser parser = this.getCShaniDomParser();
 			final _ITextRenderer renderer = this.getITextRenderer();
+			
 			final Reader r = CXmlParser.getReader(in);
 			final StringBuffer s = new StringBuffer();
 			final char[] buffer = new char[2048];
@@ -772,7 +774,14 @@ public final class CHtmlToPdfFlyingSaucerTransformer implements
 				files.add(f);
 				final OutputStream fout = new BufferedOutputStream(
 						new FileOutputStream(f));
+
+				
+				// Code I am adding to fix the scaling issue
+				//renderer.getWriter().setViewerPreferences( PdfWriter.PrintScalingNone  );						
+						
 				renderer.createPDF(fout, true);
+
+				
 				fout.flush();
 				fout.close();
 			}

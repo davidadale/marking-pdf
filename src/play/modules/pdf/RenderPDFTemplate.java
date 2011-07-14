@@ -115,8 +115,28 @@ public class RenderPDFTemplate extends Result {
         Map<?,?> properties = Play.configuration;
         String uri = request.getBase()+request.url;
         if(docs.documents.size() == 1){
-        	renderDoc(docs.documents.get(0), uri, properties, out);
+	
+            PDFDocument pdf = docs.documents.get( 0 );
+
+            Document resultDocument = new Document();
+            PdfCopy copy = new PdfCopy( resultDocument, out );
+            resultDocument.open();
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            renderDoc( pdf , uri, properties, os);
+            PdfReader pdfReader = new PdfReader( os.toByteArray() );
+            copy.addPage( copy.getImportedPage(pdfReader, 1) );
+            copy.freeReader(pdfReader);
+
+            if( StringUtils.isNotEmpty( pdf.options.JAVASCRIPT ) ){
+                copy.addJavaScript( pdf.options.JAVASCRIPT );
+            }
+            
+            resultDocument.close();
+
         }else{
+	
+			StringBuilder javascript = new StringBuilder();
+	
         	// we need to concatenate them all
         	Document resultDocument = new Document();
         	PdfCopy copy = new PdfCopy(resultDocument, out);
@@ -131,7 +151,20 @@ public class RenderPDFTemplate extends Result {
         			copy.addPage(copy.getImportedPage(pdfReader, i+1));
         		}
         		copy.freeReader(pdfReader);
+                
+				if(StringUtils.isNotEmpty(doc.options.JAVASCRIPT) ){
+                    // because the options may be shared we don't want duplicate JS.
+                    if( javascript.indexOf(doc.options.JAVASCRIPT) == -1 ){
+                        javascript.append(  doc.options.JAVASCRIPT );
+                    }
+                }
+
         	}
+
+            if( javascript.length()>0){
+                copy.addJavaScript( javascript.toString() );
+            }
+
         	resultDocument.close();
         }
 	}
