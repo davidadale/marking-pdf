@@ -455,7 +455,7 @@ public final class CHtmlToPdfFlyingSaucerTransformer implements
 		ret.setXmlOut(true);
 		ret.setFixComments(true);
 		ret.setEscapeCdata(true);
-		ret.setMakeBare(true);
+		//ret.setMakeBare(true);
 		ret.setMakeClean(true);
 		ret.setFixBackslash(true);
 		ret.setIndentContent(true);
